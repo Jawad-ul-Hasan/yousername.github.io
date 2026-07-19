@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexRace - Professional Telemetry Control</title>
+    <script src="https://tailwindcss.com"></script>
+    <link href="https://googleapis.com" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#09090b] text-[#f4f4f5] min-h-screen p-4 md:p-8 selection:bg-emerald-500 selection:text-black">
+
+    <!-- Top Dashboard Navigation -->
+    <header class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-[#27272a] pb-6 mb-8">
+        <div>
+            <div class="flex items-center gap-3">
+                <div class="h-3 w-3 bg-emerald-500 rounded-full shadow-[0_0_12px_#10b981] animate-pulse"></div>
+                <h1 class="text-2xl font-extrabold tracking-tight uppercase text-transparent bg-clip-text bg-gradient-to-r from-white to-[#a1a1aa]">
+                    ApexRace <span class="text-emerald-500 text-sm font-mono tracking-widest ml-1 font-medium text-xs">V2.4</span>
+                </h1>
+            </div>
+            <p class="text-xs text-[#71717a] mt-1 font-mono uppercase tracking-wider">Telemetry Location: Kallar Kahar Sector M2</p>
+        </div>
+        <div class="flex items-center gap-4 bg-[#18181b] border border-[#27272a] px-4 py-2 rounded-lg">
+            <span class="text-xs font-mono text-[#a1a1aa] uppercase">Track Temp</span>
+            <span class="text-sm font-bold text-emerald-400 font-mono">34.2°C</span>
+        </div>
+    </header>
+
+    <!-- Main Grid Workspace -->
+    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Column 1 & 2: Main Session Leaderboard -->
+        <section class="lg:col-span-2 bg-[#141417] border border-[#27272a] rounded-xl overflow-hidden shadow-2xl">
+            <div class="p-6 border-b border-[#27272a] bg-[#18181b]/50 flex justify-between items-center">
+                <h2 class="text-sm font-bold tracking-widest text-[#a1a1aa] uppercase font-mono">Live Timing Monitors</h2>
+                <span class="px-2.5 py-0.5 text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded">AUTO_REFRESH: 1S</span>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-[11px] font-mono uppercase text-[#71717a] tracking-widest border-b border-[#27272a] bg-[#18181b]/20">
+                            <th class="py-4 px-6 text-center w-16">P</th>
+                            <th class="py-4 px-4">Driver Spec</th>
+                            <th class="py-4 px-4">Chassis Model</th>
+                            <th class="py-4 px-4 text-right">Delta</th>
+                            <th class="py-4 px-6 text-right">Lap Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-rows" class="divide-y divide-[#27272a]/40">
+                        <!-- Content gets loaded dynamically by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Column 3: Telemetry Insights Panel -->
+        <section class="flex flex-col gap-6">
+            <!-- Telemetry Box 1 -->
+            <div class="bg-[#141417] border border-[#27272a] rounded-xl p-6 shadow-2xl">
+                <h3 class="text-xs font-bold font-mono tracking-widest text-[#71717a] uppercase mb-4">Fastest Theoretical Sector</h3>
+                <div class="flex justify-between items-end">
+                    <div>
+                        <p class="text-3xl font-bold font-mono text-white tracking-tight" id="fastest-lap-display">--:--</p>
+                        <p class="text-xs text-[#a1a1aa] mt-1" id="fastest-driver-display">Calculating sector speeds...</p>
+                    </div>
+                    <div class="bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2 py-1 rounded font-mono text-[10px] uppercase font-bold tracking-wider">
+                        Purple Sectors
+                    </div>
+                </div>
+            </div>
+
+            <!-- Telemetry Box 2 -->
+            <div class="bg-[#141417] border border-[#27272a] rounded-xl p-6 shadow-2xl flex-1">
+                <h3 class="text-xs font-bold font-mono tracking-widest text-[#71717a] uppercase mb-4">Live Session Diagnostics</h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs font-mono text-[#a1a1aa] mb-1.5">
+                            <span>GPS Network Uplink</span>
+                            <span class="text-emerald-400 font-bold">100% Secure</span>
+                        </div>
+                        <div class="w-full bg-[#27272a] h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-emerald-500 h-full w-full"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs font-mono text-[#a1a1aa] mb-1.5">
+                            <span>Track Congestion</span>
+                            <span class="text-amber-400 font-bold">Moderate</span>
+                        </div>
+                        <div class="w-full bg-[#27272a] h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-amber-500 h-full w-[45%]"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- JavaScript Handling Premium Real-Time Data Injections -->
+    <script>
+        const racers = [
+            { racer: "Zain_Evo", vehicle: "Mitsubishi Evolution X", lapTime: "01:39.12", delta: "-0.00" },
+            { racer: "Ali_RX8", vehicle: "Mazda RX-8 Type S", lapTime: "01:42.53", delta: "+3.41" },
+            { racer: "Kamran_BRZ", vehicle: "Subaru BRZ sSeries", lapTime: "01:43.05", delta: "+3.93" },
+            { racer: "Hamza_Civic", vehicle: "Honda Civic Type R", lapTime: "01:44.20", delta: "+5.08" }
+        ];
+
+        function renderDashboard() {
+            const tableBody = document.getElementById('leaderboard-rows');
+            
+            // Build the data table
+            tableBody.innerHTML = racers.map((item, i) => `
+                <tr class="hover:bg-[#18181b]/40 transition-all duration-200 group">
+                    <td class="py-4 px-6 text-center font-mono font-bold text-sm ${i === 0 ? 'text-emerald-400' : 'text-[#71717a]' }">${i + 1}</td>
+                    <td class="py-4 px-4 font-semibold text-white tracking-wide group-hover:text-emerald-400 transition-colors">${item.racer}</td>
+                    <td class="py-4 px-4 text-xs font-mono text-[#a1a1aa]">${item.vehicle}</td>
+                    <td class="py-4 px-4 text-right font-mono text-xs ${i === 0 ? 'text-[#71717a]' : 'text-rose-400'}">${item.delta}</td>
+                    <td class="py-4 px-4 text-right font-mono text-sm text-emerald-400 font-bold tracking-wider">${item.lapTime}</td>
+                </tr>
+            `).join('');
+
+            // Inject the premium telemetry analytics elements
+            document.getElementById('fastest-lap-display').innerText = racers[0].lapTime;
+            document.getElementById('fastest-driver-display').innerText = `Set by ${racers[0].racer} (${racers[0].vehicle})`;
+        }
+
+        // Initialize immediately
+        renderDashboard();
+    </script>
+</body>
+</html>
